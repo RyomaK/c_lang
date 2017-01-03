@@ -1,5 +1,6 @@
-# c_lang
-make　ファイル
+# c言語
+
+1.othello(report2.c)
 
 #シェルコマンド
 
