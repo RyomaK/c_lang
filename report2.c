@@ -61,7 +61,7 @@ int board[8][8] = {
 };
 
 
-//走査時
+//走査時方向
 int vec_y[] = {-1,-1,0,1,1,1,0,-1};
 int vec_x[] = {0,1,1,1,0,-1,-1,-1};
 //player BLACK = 1
@@ -91,23 +91,23 @@ int main(void) {
 			next_turn = next_turn * -1;
 			break;
 			case 2:
-			    switch(counter()){
-				  case 0:
-				  locate(20,15);
-				    prints("COM WIN");
-				  break;
-				  case 1:
-				  locate(20,15);
-				    prints("PLAYER WIN");
-				    break;
-				  case 2:
-				  locate(20,15);
-				    prints("DRAW");
-				  break;
-				  default:
-				  break;
-				}
-			  next_turn = 2;
+			switch(counter()){
+				case 0:
+				locate(20,15);
+				prints("COM WIN");
+				break;
+				case 1:
+				locate(20,15);
+				prints("PLAYER WIN");
+				break;
+				case 2:
+				locate(20,15);
+				prints("DRAW");
+				break;
+				default:
+				break;
+			}
+			next_turn = 2;
 			break;
 			default:
 
@@ -118,7 +118,7 @@ int main(void) {
 	return 0;
 
 }
-
+//初期化
 void init() {
 	hword *ptr;
 	ptr = (hword*)0x04000000;
@@ -132,7 +132,7 @@ void init() {
 
 
 }
-
+//ブロック記入
 void block(hword color) {
 	hword tx, ty;
 
@@ -144,8 +144,7 @@ void block(hword color) {
 }
 
 
-
-/* •¶ŽšÀ•W(0, 0)`(29,19)‚ÌˆÊ’u(cx, cy)‚ð‰æ–ÊÀ•W‚É•ÏŠ· */
+//8*8
 void locate(hword cx, hword cy){
 	if (cx < LCD_CHAR_WIDTH ) {
 		p.x = cx << 3;				/* xÀ•W‚ÌŽw’è */
@@ -158,7 +157,7 @@ void locate(hword cx, hword cy){
 		p.y = LCD_CHAR_HEIGHT - 1;	/* y‚ÌÅ‘å’l‚ðÝ’è */
 	}
 }
-
+//16*16
 void locate_board(hword cx , hword cy){
 	if (cx < LCD_CHAR_WIDTH ) {
 		p.x = cx << 4;				/* xÀ•W‚ÌŽw’è */
@@ -176,7 +175,7 @@ void locate_board(hword cx , hword cy){
 
 
 
-/* ˆø”‚ð10i”‚Æ‚µ‚Ä•\Ž¦‚·‚éŠÖ”iÅ‘å’l16ƒrƒbƒgj*/
+//数字
 void printn(hword val) {
 
 	byte char_data[] = "0123456789";
@@ -184,7 +183,6 @@ void printn(hword val) {
 	hword tmp;
 	int i;
 	
-	/* “ü—Í’lval‚ÌŒ…””»’è */
 	tmp = val;
 	for (i = 0; i < 5; i++) {
 		if (tmp >= 10){
@@ -194,23 +192,19 @@ void printn(hword val) {
 		}
 	}
 
-	/* •¶Žš—ñ‚ÌÅŒã‚ÉNULLƒR[ƒh‘}“ü */
-	buf[i+1] = 0;
 	
-	/* Å‰ºˆÊŒ…‚Ì•¶Žši10‚ÅŠ„‚Á‚½—]‚èj‚ð‘}“ü‚µC“ü—Í’l‚ð10‚ÅŠ„‚é */
+	buf[i+1] = 0;
 	for(; i >= 0; i--) {
 		buf[i] = char_data[mod(val, 10)];
 		val = div(val, 10);
 	}
 	
-	/* •¶Žš—ñ‘S‘Ì‚ð•\Ž¦ */
 	prints(buf);
 	
 	return;
 }
 
-
-/* Š„‚èŽZ‚Ì¤‚ð‹‚ß‚éŠÖ”*/
+//割り算
 hword div(hword dividened, hword divisor){
 	
 	hword quotient = 0;			
@@ -226,11 +220,10 @@ hword div(hword dividened, hword divisor){
 	return quotient;
 }
 
-
-/* Š„‚èŽZ‚Ì—]‚è‚ð‹‚ß‚éŠÖ”*/
+//amari
 hword mod(hword dividened, hword divisor){
 	
-	hword quotient = 0;			/* ¤ */
+	hword quotient = 0;			
 	
 	while(1){
 		if (dividened >= divisor){
@@ -243,8 +236,7 @@ hword mod(hword dividened, hword divisor){
 	return dividened;
 }
 
-
-/* •¶Žš—ñ•\Ž¦ŠÖ” */
+//文字列表示
 void prints(byte *str) {
 
 	while(*str) {
@@ -254,28 +246,27 @@ void prints(byte *str) {
 }
 
 
-/* locate‚ÅÝ’è‚³‚ê‚½ˆÊ’u‚ÉASCIIƒR[ƒhascii_num‚É‘Š“–‚·‚é•¶Žš‚ð•\Ž¦‚·‚éŠÖ” */
+/* locateで場所決め,8*8aschii.h*/
 void print_ascii(byte ascii_num) {
 	
-	hword tx, ty;							/* •¶Žšƒpƒ^[ƒ“‚ÌÀ•WŽw’è */
-	byte cbit;								/* ƒrƒbƒg”»’è */
+	hword tx, ty;							
+	byte cbit;								
 
-	for(ty = 0; ty < 8; ty++) {				/* •¶Žšƒpƒ^[ƒ“‚ÌyÀ•WŽw’è */
-	
-		cbit = 0x80;						/* ”»’èƒrƒbƒg‚ð8ƒrƒbƒg‚ÌÅãˆÊ‚ÉƒZƒbƒg */
-
-		for(tx = 0; tx < 8; tx++) {							/* •¶Žšƒpƒ^[ƒ“‚ÌxÀ•WŽw’è */
-			if((char8x8[ascii_num][ty] & cbit) == cbit){			/* ƒrƒbƒgˆÊ’u‚Ì”»’è */
-				draw_point((p.x + tx), (p.y + ty), BGR(0x1F, 0x1F, 0x1F));	// 1‚È‚ç”’
+	for(ty = 0; ty < 8; ty++) {				
+		
+		cbit = 0x80;						
+		for(tx = 0; tx < 8; tx++) {							
+			if((char8x8[ascii_num][ty] & cbit) == cbit){	
+				draw_point((p.x + tx), (p.y + ty), BGR(0x1F, 0x1F, 0x1F));	
 			}else {
-				draw_point((p.x + tx), (p.y + ty), BGR(0x00, 0x00, 0x00));	// 0‚È‚ç•
+				draw_point((p.x + tx), (p.y + ty), BGR(0x00, 0x00, 0x00));	
 			}
-			cbit = cbit >> 1;					/* ”»’èƒrƒbƒg‚ð1ƒrƒbƒg‰E‚ÖƒVƒtƒg */
+			cbit = cbit >> 1;	
 		}
 	}
 }
 
-
+//座標に点を打つ
 void draw_point(hword x, hword y, hword color) {
 
 	hword *ptr;
@@ -286,6 +277,7 @@ void draw_point(hword x, hword y, hword color) {
 
 }
 
+//key入力
 void input_key(){
 	hword temp;
 	hword *key;
@@ -331,7 +323,7 @@ void input_key(){
 		break;
 	}
 }
-
+//盤面表示
 void display(){
 	hword tx, ty;
 	for (tx = 0; tx < 8; tx++) {
@@ -348,7 +340,7 @@ void display(){
 				if(check(tx,ty,PLAYER)==1){
 					p_cursor(BLUE);
 				}else{
-				p_cursor(RED);
+					p_cursor(RED);
 				}
 			}
 		}
@@ -362,7 +354,7 @@ void display(){
 	}
 	
 }
-
+//コマ表示
 void circle(hword color){
 	hword tx,ty;
 	for(tx = 0;tx<16;tx++){
@@ -376,7 +368,7 @@ void circle(hword color){
 	}
 
 }
-
+//カーソル設定
 void p_cursor(hword color){
 	hword tx,ty;
 	for(tx = 0;tx<16;tx++){
@@ -391,79 +383,70 @@ void p_cursor(hword color){
 }
 
 
-//vecで指定された向きについてひっくり返るコマがあるか確認する
+//vecの向きにひっくり返るコマがあるか確認
 int check_flip(int x,int y,int turn,int vec)
 {	int flag = 0;
 	while(1){
 		y += vec_y[vec];
 		x += vec_x[vec];
 		
-		//盤面の外に出ていたら終了
 		if( x < 0 || y < 0 || x > 7 || y > 7) return 0;
 		
-		//空きマスだったら終了
 		if(board[y][x] == 0) return 0;
 		
-		//相手のコマがあったらフラグを立てる
 		if(board[y][x] == (turn*-1)){
 			flag = 1;
 			continue;
 		}
 		
-		//もしフラグがたっていればループ脱出。いなければ終了
 		if(flag == 1) break;
 		return 0;
 	}
 	return 1;
 }
 
-//その場所に置くことができるかを確認する関数
+//コマを置けるか確認する関数
 int check(int x,int y,int turn)
 {
 	int vec;
 	
 	//どれか一方向でもひっくり返るか確認
 	if(board[y][x]==0){
-	for(vec = 0 ; vec < 8 ; vec++){
-		if(check_flip(x,y,turn,vec) == 1) return 1;
-	}
+		for(vec = 0 ; vec < 8 ; vec++){
+			if(check_flip(x,y,turn,vec) == 1) return 1;
+		}
 	}
 	return 0;
 }
 
-//実際に裏返す関数
+//コマ裏返す
 void flip(int x,int y,int turn,int vec){
 	while(1){
 		y += vec_y[vec];
 		x += vec_x[vec];
 		
-		//自分のコマがあったら終了
 		if(board[y][x] == turn) {
 
 			break;
 		}
-		//それ以外なら自分のコマで塗りつぶす
+		
 		board[y][x] = turn;
 	}
 }
 
-//入力を受けて裏返せるか確かめる関数
+//コマを置く
 int put(int x,int y,int turn){
 	int vec,flag=0;
 	
-	//空白でなければ終了
 	if(board[y][x] != 0) return 0;
-	
-	//全方向について確認
+
 	for(vec=0 ; vec < 8 ; ++vec){
 		if(check_flip(x,y,turn,vec) == 1){
-			//裏返す
 			flip(x,y,turn,vec);
 			flag = 1;
 		}
 	}
 	if(flag == 1){
-		//この場所にコマを置く
 		board[y][x] = turn;
 		return 1;
 	}
@@ -471,46 +454,48 @@ int put(int x,int y,int turn){
 	return 0;
 }
 
-
+//コマが置けるか
 int check_end(int turn)
 {
 	hword i,j;
-	//置ける場所があるか確認
+	
 	for(i = 0 ; i < 8; ++i){
 		for(j = 0 ; j<8 ; ++j){
-			//あれば続行
+			
 			if(board[j][i] == 0 && check(i,j,turn) == 1) return 0;
 		}
 	}
-	//場所が無かったので交替して探す
+	
 	turn = turn * -1;
 	for(i = 0 ; i < 8 ; ++i){
 		for(j = 0 ; j < 8; ++j){
-			//あればpassして続行
+			
 			if(board[j][i] == 0 && check(i,j,turn) == 1) return 1;
 		}
 	}
 	
-	//なかったのでゲーム終了
+	
 	return 2;
 }
 
+//cpuの手
 void com_ans(){
 	hword x,y;	
-		for(x = 0;x< 8; x++){
-			for(y = 0;y<8;y++){
-				if(next_turn == COM ){
-					if(check(x,y,COM)==1){
-						put(x,y,COM);
-						next_turn = PLAYER;
-						break;
-					}
+	for(x = 0;x< 8; x++){
+		for(y = 0;y<8;y++){
+			if(next_turn == COM ){
+				if(check(x,y,COM)==1){
+					put(x,y,COM);
+					next_turn = PLAYER;
+					break;
 				}
 			}
 		}
+	}
 	
 }
 
+//コマを数える
 int counter(){
 	hword x,y;
 	int black =0;
