@@ -12,7 +12,7 @@
 #define PLAYER 1
 #define COM -1 
 
-
+//hword = unsigned short (unsigned int)
 
 void init();
 void block(hword);
@@ -66,6 +66,7 @@ int vec_y[] = {-1,-1,0,1,1,1,0,-1};
 int vec_x[] = {0,1,1,1,0,-1,-1,-1};
 //player BLACK = 1
 //com WHITE = -1
+
 int main(void) {
 	init();
 	next_turn = PLAYER;
@@ -132,7 +133,7 @@ void init() {
 
 
 }
-//ブロック記入
+//ブロック表示
 void block(hword color) {
 	hword tx, ty;
 
@@ -147,27 +148,28 @@ void block(hword color) {
 //8*8
 void locate(hword cx, hword cy){
 	if (cx < LCD_CHAR_WIDTH ) {
-		p.x = cx << 3;				/* xÀ•W‚ÌŽw’è */
+		p.x = cx << 3;				/* x座標の指定 */
 	} else {
-		p.x = LCD_CHAR_WIDTH - 1;	/* x‚ÌÅ‘å’l‚ðÝ’è */
+		p.x = LCD_CHAR_WIDTH - 1;	/* xの最大値を設定 */
 	}
 	if (cy < LCD_CHAR_HEIGHT) {
-		p.y = cy << 3;				/* yÀ•W‚ÌŽw’è */
+		p.y = cy << 3;				/* y座標の指定 */
 	} else {
-		p.y = LCD_CHAR_HEIGHT - 1;	/* y‚ÌÅ‘å’l‚ðÝ’è */
+		p.y = LCD_CHAR_HEIGHT - 1;	/* yの最大値を設定 */
 	}
 }
+
 //16*16
 void locate_board(hword cx , hword cy){
 	if (cx < LCD_CHAR_WIDTH ) {
-		p.x = cx << 4;				/* xÀ•W‚ÌŽw’è */
+		p.x = cx << 4;				/* x座標の指定 */
 	} else {
-		p.x = LCD_CHAR_WIDTH - 1;	/* x‚ÌÅ‘å’l‚ðÝ’è */
+		p.x = LCD_CHAR_WIDTH - 1;	/* xの最大値を設定 */
 	}
 	if (cy < LCD_CHAR_HEIGHT) {
-		p.y = cy << 4;				/* yÀ•W‚ÌŽw’è */
+		p.y = cy << 4;				/* y座標の指定 */
 	} else {
-		p.y = LCD_CHAR_HEIGHT - 1;	/* y‚ÌÅ‘å’l‚ðÝ’è */
+		p.y = LCD_CHAR_HEIGHT - 1;	/* yの最大値を設定 */
 	}
 }
 
@@ -175,7 +177,7 @@ void locate_board(hword cx , hword cy){
 
 
 
-//数字
+//数字表示
 void printn(hword val) {
 
 	byte char_data[] = "0123456789";
@@ -220,7 +222,7 @@ hword div(hword dividened, hword divisor){
 	return quotient;
 }
 
-//amari
+//余り
 hword mod(hword dividened, hword divisor){
 	
 	hword quotient = 0;			
@@ -426,7 +428,6 @@ void flip(int x,int y,int turn,int vec){
 		x += vec_x[vec];
 		
 		if(board[y][x] == turn) {
-
 			break;
 		}
 		
@@ -461,15 +462,13 @@ int check_end(int turn)
 	
 	for(i = 0 ; i < 8; ++i){
 		for(j = 0 ; j<8 ; ++j){
-			
 			if(board[j][i] == 0 && check(i,j,turn) == 1) return 0;
 		}
 	}
-	
+	//パスしてターン変更した場合
 	turn = turn * -1;
 	for(i = 0 ; i < 8 ; ++i){
 		for(j = 0 ; j < 8; ++j){
-			
 			if(board[j][i] == 0 && check(i,j,turn) == 1) return 1;
 		}
 	}
